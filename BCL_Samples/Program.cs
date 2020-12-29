@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,11 +17,23 @@ namespace BCL_Samples
     {
         static void Main(string[] args)
         {
+
+
+
             Console.OutputEncoding = Encoding.UTF8;
-            var culture = new CultureInfo("ru-RU");
-            CultureInfo.DefaultThreadCurrentCulture = culture;
-            CultureInfo.DefaultThreadCurrentUICulture = culture;
-           
+            var s=(BCL_ConfigurationSection)ConfigurationManager.GetSection("simpleSection");
+
+             
+            CultureInfo.DefaultThreadCurrentCulture = s.Culture;
+            CultureInfo.DefaultThreadCurrentUICulture = s.Culture;
+
+
+            foreach (DirElement d in  s.Dirs)
+            {
+                Console.WriteLine("Config Path: "+ d.Path);
+            }
+
+
             var rm = new ResourceManager("BCL_Samples.Resources.LogMessages",typeof(Program).Assembly);
             var ca = DateTime.Now;
             
