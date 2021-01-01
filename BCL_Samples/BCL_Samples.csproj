@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BCL_ConfigurationSection.cs" />
+    <Compile Include="ConfigDirectories.cs" />
+    <Compile Include="ConfigRules.cs" />
     <Compile Include="FileUtilities.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

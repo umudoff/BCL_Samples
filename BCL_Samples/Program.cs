@@ -15,42 +15,40 @@ namespace BCL_Samples
 {
     class Program
     {
-        static void Main(string[] args)
+        private static List<FileSystemWatcher> fileWatchers= new List<FileSystemWatcher>();
+
+        public static void InitWatchers(DirElementCollection directories)
         {
-
-
-
-            Console.OutputEncoding = Encoding.UTF8;
-            var s=(BCL_ConfigurationSection)ConfigurationManager.GetSection("simpleSection");
-
-             
-            CultureInfo.DefaultThreadCurrentCulture = s.Culture;
-            CultureInfo.DefaultThreadCurrentUICulture = s.Culture;
-
-
-            foreach (DirElement d in  s.Dirs)
+            foreach (DirElement d in directories)
             {
-                Console.WriteLine("Config Path: "+ d.Path);
+                var watcher = new FileSystemWatcher();
+                watcher.Path = d.Path;
+                watcher.NotifyFilter = NotifyFilters.FileName;
+                watcher.Created += (object sender, FileSystemEventArgs e) => {
+                    FileUtilities.ProcessFile(e.FullPath);
+                };
+                watcher.EnableRaisingEvents = true;
+                fileWatchers.Add(watcher);
             }
 
-
-            var rm = new ResourceManager("BCL_Samples.Resources.LogMessages",typeof(Program).Assembly);
-            var ca = DateTime.Now;
-            
+        }
+        static void Main(string[] args)
+        {
+            var config = (BCL_ConfigurationSection)ConfigurationManager.GetSection("simpleSection");
+            Console.OutputEncoding = Encoding.UTF8;
+            CultureInfo.DefaultThreadCurrentCulture = config.Culture;
+            CultureInfo.DefaultThreadCurrentUICulture = config.Culture;
+            CultureInfo.CurrentUICulture = config.Culture;
+            CultureInfo.CurrentCulture = config.Culture;      
+            var rm = new ResourceManager("BCL_Samples.Resources.LogMessages",typeof(Program).Assembly);           
             var mes = BCL_Samples.Resources.LogMessages.StopExecution;
             Console.WriteLine(rm.GetString("StopExecution"));
-
-            var watcher = new FileSystemWatcher();
-            watcher.Path= @"C:\test_202012";
-            watcher.NotifyFilter = NotifyFilters.FileName;
-            watcher.Created+= (object sender, FileSystemEventArgs e)=> {
-                  FileUtilities.ProcessFile(e.FullPath);
-             };
-
-            watcher.EnableRaisingEvents = true;
+            
+            FileUtilities.InitRules(config.Rules);
+            InitWatchers(config.Dirs);
 
             Console.ReadLine();
-
+   
         }
 
         

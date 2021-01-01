@@ -126,6 +126,12 @@
   <data name="FileMovedSuccessMessage" xml:space="preserve">
     <value>Файл успешно перемещен из папки {0} в {1}  </value>
   </data>
+  <data name="RuleMatches" xml:space="preserve">
+    <value>Правило {0} совпало для {1}</value>
+  </data>
+  <data name="RuleNotMatches" xml:space="preserve">
+    <value>Правило {0} не совпало для {1}</value>
+  </data>
   <data name="StopExecution" xml:space="preserve">
     <value>Для остановки выполнения нажмите Ctrl+C или Ctrl+Break</value>
   </data>

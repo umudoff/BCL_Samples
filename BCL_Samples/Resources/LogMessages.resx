@@ -126,6 +126,12 @@
   <data name="FileMovedSuccessMessage" xml:space="preserve">
     <value>File moved successfully from {0} to {1} folder </value>
   </data>
+  <data name="RuleMatches" xml:space="preserve">
+    <value>Rule {0} matches for {1}</value>
+  </data>
+  <data name="RuleNotMatches" xml:space="preserve">
+    <value>Rule {0} doesn't matches for {1}</value>
+  </data>
   <data name="StopExecution" xml:space="preserve">
     <value>Press Ctrl+C or Ctrl+Break in order to stop execution</value>
   </data>

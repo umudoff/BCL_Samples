@@ -88,6 +88,24 @@ namespace BCL_Samples.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rule {0} matches for {1}.
+        /// </summary>
+        internal static string RuleMatches {
+            get {
+                return ResourceManager.GetString("RuleMatches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rule {0} doesn&apos;t matches for {1}.
+        /// </summary>
+        internal static string RuleNotMatches {
+            get {
+                return ResourceManager.GetString("RuleNotMatches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Press Ctrl+C or Ctrl+Break in order to stop execution.
         /// </summary>
         internal static string StopExecution {

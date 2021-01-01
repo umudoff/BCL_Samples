@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,20 +12,78 @@ namespace BCL_Samples
 {
     class FileUtilities
     {
+        public class Rule
+        {
+            public RuleElement RuleElement;
+            public int matchesCount;
+           public  Rule(RuleElement r)
+            {
+                this.RuleElement = r;
+                matchesCount = 0;
+            }
+
+        }
+
+        private static List<Rule> rulesConfig = new List<Rule>();
+        public static void InitRules(RulesElementCollection rules)
+        {
+            foreach (RuleElement r in rules)
+            {
+                Rule rule = new Rule(r);
+                rulesConfig.Add(rule);
+            }
+
+        }
 
         public static void ProcessFile( string source)
         {
-            
+            FileInfo defaultPath = new FileInfo(@"C:\test_202012\default");
+            bool isFileMoved = false;
             var fInfo = new FileInfo(source);
-            Console.WriteLine(string.Format(BCL_Samples.Resources.LogMessages.FileInfoMessage, fInfo.Name, fInfo.CreationTime)
-               );
-            
-            var folder= Path.Combine(fInfo.Directory.ToString(), "default");
-            var destination= Path.Combine(folder, fInfo.Name);
-            MoveFile(fInfo.FullName.ToString(), destination);
+           
+            foreach (var rule in rulesConfig)
+            {
+               var match = Regex.Match(fInfo.Name, rule.RuleElement.FileNamePattern);
+                if (match.Success)
+                {
+                    rule.matchesCount++;
+                    isFileMoved = true;
+                    Console.WriteLine(string.Format(BCL_Samples.Resources.LogMessages.RuleMatches, rule.RuleElement.FileNamePattern, fInfo.Name));
+                    string extension = Path.GetExtension(fInfo.Name);
+                    string destination="";
+                    var folder = rule.RuleElement.DestinationDirectory.ToString();
+                    string fName =Path.GetFileNameWithoutExtension(fInfo.Name);
+                    
+                    if (rule.RuleElement.AddMoveDate)
+                    {
+                        var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+                        fName = string.Concat(fName, $"_{DateTime.Now.ToString("yyyyMMdd")}");                           
+                    }
 
+                    if (rule.RuleElement.AddFileIndex)
+                    {
+                        var fIndex = "_"+rule.matchesCount.ToString();
+                        fName = string.Concat(string.Concat(fName, fIndex), extension);
+                    }
 
+                    destination = Path.Combine(folder, string.Concat(fName, extension));
+
+                    MoveFile(fInfo.FullName.ToString(), destination);                
+                }
+                else
+                {
+                    Console.WriteLine(string.Format(BCL_Samples.Resources.LogMessages.RuleNotMatches, rule.RuleElement.FileNamePattern, fInfo.Name));
+                }
+
+                if (!isFileMoved)
+                {
+                    var destination = Path.Combine(defaultPath.ToString(), fInfo.Name);
+                    MoveFile(fInfo.FullName.ToString(), destination);
+                }
+            }
+            Console.WriteLine(string.Format(BCL_Samples.Resources.LogMessages.FileInfoMessage, fInfo.Name, fInfo.CreationTime));
         }
+
         public static void MoveFile(string source, string destination)
         {
              
