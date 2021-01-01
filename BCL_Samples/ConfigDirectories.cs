@@ -23,6 +23,12 @@ namespace BCL_Samples
 
     public class DirElementCollection : ConfigurationElementCollection
     {
+
+        [ConfigurationProperty("defaultDirectory")]
+        public string DefaultDirectory {
+            get { return (string)this["defaultDirectory"]; }
+        }
+
         protected override ConfigurationElement CreateNewElement()
         {
             return new DirElement();

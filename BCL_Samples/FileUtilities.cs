@@ -25,6 +25,24 @@ namespace BCL_Samples
         }
 
         private static List<Rule> rulesConfig = new List<Rule>();
+        private static List<FileSystemWatcher> fileWatchers = new List<FileSystemWatcher>();
+        private static FileInfo defaultPath;
+        public static void InitWatchers(DirElementCollection directories)
+        {
+            defaultPath = new FileInfo(directories.DefaultDirectory);
+            foreach (DirElement d in directories)
+            {
+                var watcher = new FileSystemWatcher();
+                watcher.Path = d.Path;
+                watcher.NotifyFilter = NotifyFilters.FileName;
+                watcher.Created += (object sender, FileSystemEventArgs e) => {
+                    FileUtilities.ProcessFile(e.FullPath);
+                };
+                watcher.EnableRaisingEvents = true;
+                fileWatchers.Add(watcher);
+            }
+
+        }
         public static void InitRules(RulesElementCollection rules)
         {
             foreach (RuleElement r in rules)
@@ -35,9 +53,8 @@ namespace BCL_Samples
 
         }
 
-        public static void ProcessFile( string source)
+        public static void ProcessFile(string source)
         {
-            FileInfo defaultPath = new FileInfo(@"C:\test_202012\default");
             bool isFileMoved = false;
             var fInfo = new FileInfo(source);
            

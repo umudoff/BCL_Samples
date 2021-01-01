@@ -15,23 +15,8 @@ namespace BCL_Samples
 {
     class Program
     {
-        private static List<FileSystemWatcher> fileWatchers= new List<FileSystemWatcher>();
 
-        public static void InitWatchers(DirElementCollection directories)
-        {
-            foreach (DirElement d in directories)
-            {
-                var watcher = new FileSystemWatcher();
-                watcher.Path = d.Path;
-                watcher.NotifyFilter = NotifyFilters.FileName;
-                watcher.Created += (object sender, FileSystemEventArgs e) => {
-                    FileUtilities.ProcessFile(e.FullPath);
-                };
-                watcher.EnableRaisingEvents = true;
-                fileWatchers.Add(watcher);
-            }
-
-        }
+        
         static void Main(string[] args)
         {
             var config = (BCL_ConfigurationSection)ConfigurationManager.GetSection("simpleSection");
@@ -43,9 +28,9 @@ namespace BCL_Samples
             var rm = new ResourceManager("BCL_Samples.Resources.LogMessages",typeof(Program).Assembly);           
             var mes = BCL_Samples.Resources.LogMessages.StopExecution;
             Console.WriteLine(rm.GetString("StopExecution"));
-            
+             
             FileUtilities.InitRules(config.Rules);
-            InitWatchers(config.Dirs);
+            FileUtilities.InitWatchers(config.Dirs);
 
             Console.ReadLine();
    
